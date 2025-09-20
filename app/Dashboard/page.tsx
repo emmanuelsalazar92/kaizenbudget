@@ -1,3 +1,7 @@
+"use client";
+import { useAuth } from "@/app/providers/AuthProvider";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { AppSidebar } from "@/components/app-sidebar"
 import {
   Breadcrumb,
@@ -15,9 +19,17 @@ import {
 } from "@/components/ui/sidebar"
 
 export default function Page() {
+
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => { if (!loading && !user) router.replace("/"); }, [loading, user, router]);
+
+  if (loading) return <div>Loading…</div>;
+
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar user={{ name: user!.fullName ?? " ", email: user!.email ?? " " }} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">
